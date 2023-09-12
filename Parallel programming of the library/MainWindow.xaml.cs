@@ -1,28 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Parallel_programming_of_the_library
+namespace WpfTaskPrimeNumbers
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private async void FindPrimes_Click(object sender, RoutedEventArgs e)
+        {
+            PrimeNumbersListBox.Items.Clear();
+
+            List<int> primeNumbers = await Task.Run(() => FindPrimes());
+
+            foreach (int prime in primeNumbers)
+            {
+                PrimeNumbersListBox.Items.Add(prime);
+            }
+        }
+
+        private List<int> FindPrimes()
+        {
+            List<int> primes = new List<int>();
+
+            for (int number = 2; number <= 1000; number++)
+            {
+                if (IsPrime(number))
+                {
+                    primes.Add(number);
+                }
+            }
+
+            return primes;
+        }
+
+        private bool IsPrime(int number)
+        {
+            if (number <= 1)
+                return false;
+            if (number <= 3)
+                return true;
+            if (number % 2 == 0 || number % 3 == 0)
+                return false;
+
+            for (int i = 5; i * i <= number; i += 6)
+            {
+                if (number % i == 0 || number % (i + 2) == 0)
+                    return false;
+            }
+
+            return true;
         }
     }
 }
